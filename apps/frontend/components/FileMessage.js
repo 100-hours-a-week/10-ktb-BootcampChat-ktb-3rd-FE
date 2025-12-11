@@ -136,7 +136,7 @@ const FileMessage = ({
     console.log('다운로드', previewUrl);
 
     //const filename = msg.file?.filename;
-    if(!msg.fileId) {
+    if(!filename) {
       throw new Error('파일 정보가 없습니다.');
     }
 
@@ -197,7 +197,7 @@ const FileMessage = ({
     console.log("msg: ", msg);
 
     try {
-      if (!msg.fileId) {
+      if (!msg.metadata.filename) {
         throw new Error('파일 정보가 없습니다.');
       }
 
@@ -206,10 +206,10 @@ const FileMessage = ({
       }
 
       // const baseUrl = fileService.getFileUrl(msg.file.filename, true);
-      const baseUrl = `https://dypusta48vkr4.cloudfront.net/chat/${msg.fileId}`;
+      const baseUrl = `https://dypusta48vkr4.cloudfront.net/chat/${msg.file.filename}`;
       const authenticatedUrl = `${baseUrl}?token=${encodeURIComponent(user?.token)}&sessionId=${encodeURIComponent(user?.sessionId)}`;
 
-      const newWindow = window.open(authenticatedUrl, '_blank');
+      const newWindow = window.open(baseUrl, '_blank');
       if (!newWindow) {
         throw new Error('팝업이 차단되었습니다. 팝업 차단을 해제해주세요.');
       }
@@ -272,7 +272,8 @@ const FileMessage = ({
 
   const renderImagePreview = (originalname) => {
     try {
-      if (!msg?.fileId) {
+        console.log(msg);
+      if (!msg?.metadata.filename) {
         return (
           <div className="flex items-center justify-center h-full bg-gray-100">
             <Image className="w-8 h-8 text-gray-400" />
@@ -285,7 +286,7 @@ const FileMessage = ({
       }
 
       //const previewUrl = fileService.getPreviewUrl(msg.file, user?.token, user?.sessionId, true);
-      const previewUrl = `https://dypusta48vkr4.cloudfront.net/chat/${msg.fileId}`;
+      const previewUrl = `https://dypusta48vkr4.cloudfront.net/chat/${msg.metadata.filename}`;
 
       return (
         <div className="bg-transparent-pattern">
