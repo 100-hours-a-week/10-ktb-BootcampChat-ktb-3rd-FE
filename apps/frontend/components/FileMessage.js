@@ -140,17 +140,6 @@ const FileMessage = ({
       throw new Error('파일 정보가 없습니다.');
     }
 
-    // //그린: 다운로드 버튼 연타 방지
-    // const guard = downloadGuardRef.current;
-    // const now = Date.now();
-    // const last = guard.lastStartedAt.get(filename) ?? 0;
-
-    // if(guard.inFlight.has(filename)) return; //이미 파일을 다운로드 중인경우
-    // if(now - last < DOWNLOAD_COOLDOWN_MS) return; //쿨다운 중이면 무시
-
-    // guard.inFlight.add(filename);
-    // guard.lastStartedAt.set(filename, now);
-
     try {
       if (!user?.token || !user?.sessionId) {
         throw new Error('인증 정보가 없습니다.');
@@ -158,7 +147,7 @@ const FileMessage = ({
 
       const res = await fetch(previewUrl, {
       method: 'GET',
-      credentials: 'omit', // S3/CloudFront에는 크리덴셜 필요 없음
+      credentials: 'omit',
     });
 
     if (!res.ok) {
@@ -205,9 +194,8 @@ const FileMessage = ({
         throw new Error('인증 정보가 없습니다.');
       }
 
-      // const baseUrl = fileService.getFileUrl(msg.file.filename, true);
-      const baseUrl = `https://dypusta48vkr4.cloudfront.net/chat/${msg.file.filename}`;
-      const authenticatedUrl = `${baseUrl}?token=${encodeURIComponent(user?.token)}&sessionId=${encodeURIComponent(user?.sessionId)}`;
+      const baseUrl = `https://dypusta48vkr4.cloudfront.net/chat/${msg.metadata.filename}`;
+    
 
       const newWindow = window.open(baseUrl, '_blank');
       if (!newWindow) {
